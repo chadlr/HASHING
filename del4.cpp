@@ -34,14 +34,20 @@ class HashTable
 	}
 	int HashFunction(int key)
 	{
-		return key % TableSize;
+		int HashVal=0;
+		for (char ch: key)
+			HashVal = 37 * HashVal + ch;
+		return HashVal % TableSize;
 	}
 	void Insert(int key, int value)
 	{
 		int hash = HashFunction(key);
+		int i
 		while (Table[hash] != NULL && Table[hash]->key != key)
 		{
-			hash = HashFunction (hash+1);
+			//quadratic probing
+			hash = HashFunction (hash + i * i);
+			i = i + 1;
 		}
 		if (Table[hash] !=NULL)
 			delete Table[hash];
