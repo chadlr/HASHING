@@ -2,6 +2,7 @@
 #include<cstdlib>
 #include<string>
 #include<cstdio>
+#include<ctime>
 
 using namespace std;
 const int TableSize = 1001;
@@ -61,6 +62,8 @@ int main()
 	HashTable hash;
 	string key, value;
 	int choice;
+	clock_t start;
+	double duration;
 	while (1)
 	{
 		cout<<"Operations"<<endl;
@@ -77,7 +80,12 @@ int main()
 			cin>>value;
 			cout<<"key"<<endl;
 			cin>>key;
+			start = std::clock();
 			hash.Insert(key, value);
+			duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+			cout<<"Time Elapsed: "<<duration<<endl;
+			start = 0; //reset start time
+			duration = 0; //reset duration
 			break;
 		}
 	}
