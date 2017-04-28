@@ -1,4 +1,4 @@
-     /*
+    /*
      * C++ program to Implement AVL Tree
      */
     #include<iostream>
@@ -61,7 +61,8 @@
             cout<<"3.InOrder traversal"<<endl;
             cout<<"4.PreOrder traversal"<<endl;
             cout<<"5.PostOrder traversal"<<endl;
-            cout<<"6.Exit"<<endl;
+            cout<<"6.Search"<<endl;
+            cout<<"7.Exit"<<endl;
             cout<<"Enter your Choice: ";
             cin>>choice;
             switch(choice)
@@ -102,6 +103,11 @@
                 cout<<endl;
                 break;
             case 6:
+                 cout<<"Enter value to be searched:";
+                 cin>>item;
+                 root = avl.search(root, item);
+                 break;
+            case 7:
                 exit(1);    
                 break;
             default:
@@ -231,27 +237,25 @@
      {
               if (root == NULL)
               {
-                       cout<<"not found"<<endl;
-                       }
-              else
+                   cout<<"not found"<<endl;
+              }
+              else if (value.compare(root->data)<0)
               {
-                  if (value.compare(root->data) < 0)
-                  {
-                       search(root->left, value);
-                       }
-                  else
-                  {
-                      if (value.compare(root->data) > 0)
-                      {
-                       search(root->right, value);
-                      }
-                      else
-                      {
-                          cout<<"found"<<endl;
-                          }
-                  }
-                  }
-                  }
+                   root->left = search(root->left, value);
+                   root = balance (root);
+              }
+              else if (value.compare(root->data) >0)
+              {
+                   root->right = search(root->right, value);
+                   root = balance (root);
+              }
+              else //if (value.compare(root->data) = 0)
+              {
+                   cout<<"found"<<endl;
+              }
+              return root;
+     }
+
     /*
      * Display AVL Tree
      */
