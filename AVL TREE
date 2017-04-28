@@ -1,7 +1,8 @@
-    /*
+     /*
      * C++ program to Implement AVL Tree
      */
     #include<iostream>
+    #include<fstream>
     #include<cstdio>
     #include<sstream>
     #include<algorithm>
@@ -12,7 +13,7 @@
      */
     struct avl_node
     {
-        int data;
+        string data;
         struct avl_node *left;
         struct avl_node *right;
     }*root;
@@ -29,11 +30,12 @@
             avl_node *lr_rotation(avl_node *);
             avl_node *rl_rotation(avl_node *);
             avl_node* balance(avl_node *);
-            avl_node* insert(avl_node *, int );
-            void display(avl_node *, int);
+            avl_node* insert(avl_node *, string );
+            void display(avl_node *, string);
             void inorder(avl_node *);
             void preorder(avl_node *);
             void postorder(avl_node *);
+            avl_node* search(avl_node *, string);
             avlTree()
             {
                 root = NULL;
@@ -44,15 +46,18 @@
      */
     int main()
     {
-        int choice, item;
+        int choice;
+        string item;
         avlTree avl;
+        string line;
+        ifstream myfile("InputFile.txt");
         while (1)
         {
             cout<<"\n---------------------"<<endl;
             cout<<"AVL Tree Implementation"<<endl;
             cout<<"\n---------------------"<<endl;
             cout<<"1.Insert Element into the tree"<<endl;
-            cout<<"2.Display Balanced AVL Tree"<<endl;
+            cout<<"2.INsert from file"<<endl;
             cout<<"3.InOrder traversal"<<endl;
             cout<<"4.PreOrder traversal"<<endl;
             cout<<"5.PostOrder traversal"<<endl;
@@ -67,13 +72,19 @@
                 root = avl.insert(root, item);
                 break;
             case 2:
-                if (root == NULL)
-                {
-                    cout<<"Tree is Empty"<<endl;
-                    continue;
-                }
-                cout<<"Balanced AVL Tree:"<<endl;
-                avl.display(root, 1);
+                 if (myfile.is_open())
+                 {
+                      while (getline (myfile,line))
+                      {
+                           cout<<line<<endl;
+                           item = line;
+                           root = avl.insert(root,item);
+                      }
+                 myfile.close();
+                 }
+                 else cout<<"Unable to open file";
+                cout<<"Inputs from file inserted"<<endl;
+                //avl.display(root, 1);
                 break;
             case 3:
                 cout<<"Inorder Traversal:"<<endl;
@@ -191,7 +202,7 @@
     /*
      * Insert Element into the tree
      */
-    avl_node *avlTree::insert(avl_node *root, int value)
+    avl_node *avlTree::insert(avl_node *root, string value)
     {
         if (root == NULL)
         {
@@ -201,12 +212,12 @@
             root->right = NULL;
             return root;
         }
-        else if (value < root->data)
+        else if (value.compare(root->data)<0)
         {
             root->left = insert(root->left, value);
             root = balance (root);
         }
-        else if (value >= root->data)
+        else if (value.compare(root->data) >=0)
         {
             root->right = insert(root->right, value);
             root = balance (root);
@@ -214,23 +225,51 @@
         return root;
     }
     /*
+     * Search Element into the tree
+     */
+     avl_node *avlTree::search(avl_node *root, string value)
+     {
+              if (root == NULL)
+              {
+                       cout<<"not found"<<endl;
+                       }
+              else
+              {
+                  if (value.compare(root->data) < 0)
+                  {
+                       search(root->left, value);
+                       }
+                  else
+                  {
+                      if (value.compare(root->data) > 0)
+                      {
+                       search(root->right, value);
+                      }
+                      else
+                      {
+                          cout<<"found"<<endl;
+                          }
+                  }
+                  }
+                  }
+    /*
      * Display AVL Tree
      */
-    void avlTree::display(avl_node *ptr, int level)
-    {
-        int i;
-        if (ptr!=NULL)
-        {
-            display(ptr->right, level + 1);
-            printf("\n");
-            if (ptr == root)
-            cout<<"Root -> ";
-            for (i = 0; i < level && ptr != root; i++)
-                cout<<"        ";
-            cout<<ptr->data;
-            display(ptr->left, level + 1);
-        }
-    }
+//    void avlTree::display(avl_node *ptr, string level)
+//    {
+//        int i;
+//        if (ptr!=NULL)
+//        {
+//            display(ptr->right, level + 1);
+//            printf("\n");
+//            if (ptr == root)
+//            cout<<"Root -> ";
+//            for (i = 0; i < level && ptr != root; i++)
+//                cout<<"        ";
+//            cout<<ptr->data;
+//            display(ptr->left, level + 1);
+//        }
+//    }
     /*
      * Inorder Traversal of AVL Tree
      */
