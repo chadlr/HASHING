@@ -33,16 +33,16 @@ class HashTable
 			Table[i]=NULL;
 		}
 	}
-	int HashFunction(int key)
+	int HashFunction(const string & key, int TableSize)
 	{
 		int HashVal=0;
-		for (char ch: key)
-			HashVal = 37 * HashVal + ch;
+		for (int i = 0; i < key.size(); i++)
+			HashVal = 37 * HashVal + key[i];
 		return HashVal % TableSize;
 	}
 	void Insert(int key, int value)
 	{
-		int hash = HashFunction(key);
+		int hash = HashFunction(key,value);
 		int i
 		while (Table[hash] != NULL && Table[hash]->key != key)
 		{
