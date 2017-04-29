@@ -1,117 +1,168 @@
-#include<iostream>
-#include<cstdlib>
-#include<string>
-#include<cstdio>
-#include<fstream>
-#include<ctime>
+#include <stdio.h>
+#include <string>
+#include <iostream>
+#include <conio.h>
+#include <fstream>
+#include <ctime>
 
 using namespace std;
 
-//class HashEntry
-//{
-//	public:
-//	string key;
-//	unsigned int value;
-//	
-//	HashEntry (string key, unsigned int value)
-//	{
-//		this->key = key;
-//		this->value = value;
-//	}
-//};
+const int TableSize = 31;
+string Table[TableSize];
 
-class HashTable
-{
-		private:
-		int HashFunction(string key);
+class HashTable{
+	private:
+		unsigned int HashFunction(string);
 	
 	public:
 		HashTable();
-		void Insert(string key);
+		~HashTable();
+		void Insert(string);
+		void PrintAll();
+		bool Search(string);
 		
-		const int TableSize = 1001;
-		string Table[];
 };
 
-HashTable::HashTable()	
-{
-	Table[TableSize];
+HashTable::HashTable() {
+	
 }
 
-int HashTable::HashFunction(string key)
-{
-	int HashVal=0;
-	for (int i = 0; i < key.size(); i++)
-		HashVal = 37 * HashVal + key[i];
-	return HashVal % TableSize;
+HashTable::~HashTable(){
+	
 }
 
-void HashTable::Insert(string key)
-{
-	int hash = HashFunction(key);
-	int i = 0;
-	int index = hash;
-	while (Table[index] != "" && Table[index] != key && i != TableSize/2)
-	{
-		//quadratic probing
-		index = hash+(i*i);
-		i = i + 1;
+unsigned int HashTable::HashFunction(string key){
+	unsigned long hashkey = 0;
+	for(char ch:key){
+		hashkey = 37 * hashkey + ch;
+	}
+	return hashkey % TableSize;
+}
+
+void HashTable::Insert(string key){
+	int hashkey = HashFunction(key);
+	
+	int index = hashkey;
+	cout<<hashkey<<endl;
+	for(int i = 1; i <= TableSize/2 ;i++){
+		if(Table[index] == ""){
+			Table[index] = key;
+			return;
+		}
+		else if(Table[index]==key){
+			return;
+		}
+		index = (hashkey + (i*i)) % TableSize;
 	}
 }
 
-int main()
-{
-	HashTable hash;
-	string key, value;
-	char choice;
+bool HashTable::Search(string key){
+	int hashkey = HashFunction(key);
+	
+	int index = hashkey;
+	for(int i = 1; i <= TableSize/2 ;i++){
+		if(Table[index] == key){
+			return true;
+		}
+		index = hashkey + (i*i);
+	}
+	return false;
+}
+
+void HashTable::PrintAll() {
+	int index = 0;
+	cout<<endl<<endl;
+	for(string s:Table){
+		cout<<"Index "<<index<<":"<<"\t"<<s<<endl;
+		index++;
+	}
+}
+
+int main(){
+	HashTable h;
+	
+	bool bLoop = true;
+	
+	char select;
+	
 	clock_t start;
 	double duration;
-	while (1)
-	{
-		cout<<"Operations"<<endl;
-		cout<<"1.Add"<<endl;
-		cout<<"2.Add from file"<<endl;
-		cout<<"3.Search"<<endl;
-		cout<<"4.Del"<<endl;
-		cout<<"5.Exit"<<endl;
-		cin>>choice;
-		
-		switch(choice)
-		{
-			case '1':
-				cout<<"value"<<endl;
-				cin>>value;
-				start = std::clock();
-				hash.Insert(value);
-				duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-				cout<<"Time Elapsed: "<<duration<<endl;
-				start = 0; //reset start time
-				duration = 0; //reset duration
-				break;
-			
-			case '2':
-				cin.ignore();
-				string strLoc;
-				string line;
-				
-				cout<<"Enter file location: "<<endl;
-				getline(cin, strLoc);
-				
-				ifstream myfile (strLoc);
+	
+	while(bLoop){
+		system("CLS");
+		cout<<"Select an opton below: "<<endl;
+		cout<<"1 - Add a value"<<endl;
+		cout<<"2 - Add from file"<<endl;
+		cout<<"3 - Search"<<endl;
+		cout<<"4 - Show All"<<endl;
+		cout<<"0 - Exit"<<endl;
+		cout<<"Selection: ";
 
+		select = getche();
+		
+		
+		switch(select)
+		{
+			case '1':{
+				string value;
+				cout<<endl<<endl<<endl<<"Enter a value to add: ";
+				cin>>value;
+				cin.ignore();
+				start = clock();
+				h.Insert(value);
+				duration = (clock() - start)/ (double) CLOCKS_PER_SEC;
+				cout<<"Time elapsed: "<<duration<<endl;
+				getch();
+				start = 0;
+				duration = 0;
+				break;
+			}
+			case '2':{
+				string value;
+				cout<<endl<<endl<<"Enter file path: ";
+				getline(cin, value);
+				cout<<endl<<endl;
 				
-				start = std::clock();
-				while (myfile >> line)
-				{
-					cout<<line<<endl;
-					hash.Insert(line);
+				ifstream file(value);
+				string out;
+				
+				start = clock();
+				while(file>>out){
+					h.Insert(out);
 				}
-				duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-				
-				cout<<"Time Elapsed: "<<duration<<endl;
-				start = 0; //reset start time
-				duration = 0; //reset duration
+				duration = (clock() - start )/ (double) CLOCKS_PER_SEC;
+				cout<<"Time elapsed: "<<duration<<endl;
+				getch();
+				start = 0;
+				duration = 0;
+				break;
+			}
+			case '3':{
+				string value;
+				cout<<"Enter a value to search: ";
+				cin>>value;
+				start = clock();
+				if(h.Search(value)){
+					cout<<"Value already in the table.";
+				}
+				else{
+					cout<<"Value not yet in the table.";
+				}
+				duration = (clock() - start )/ (double) CLOCKS_PER_SEC;
+				cout<<"Time elapsed: "<<duration<<endl;
+				getch();
+				start = 0;
+				duration = 0;
+				break;
+			}
+			case '4':
+				h.PrintAll();
+				getch();
+				break;
+			case '0':
+				bLoop = false;
 				break;
 		}
 	}
+	
 }
