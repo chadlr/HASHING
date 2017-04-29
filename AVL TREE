@@ -2,7 +2,8 @@
 #include<iostream>
 #include<fstream>
 #include<cstdio>
-#include<sstream>
+#include<stdio.h>
+#include<string>
 #include<ctime>
 #include<conio.h>
 
@@ -245,7 +246,7 @@ int main()
     string line;
     clock_t start;
     double duration;
-    ifstream myfile("InputFile.txt");
+    ifstream file("InputFile.txt");    
     while (1)
     {
         system("CLS");
@@ -272,27 +273,29 @@ int main()
             duration = 0;
             getch();
             break;
-        case '2':
-             start = std::clock();
-             if (myfile.is_open())
-             {
-                  while (getline (myfile,line))
-                  {
-                       cout<<line<<endl;
-                       item = line;
-                       root = avl.insert(root,item);
-                  }
-             myfile.close();
-             }
-             else cout<<"Unable to open file";
+        case '2':{
+             string value;
+             cout<<endl<<endl<<"Enter file path: ";
+			 getline(cin, value);
+			 cout<<endl<<endl;
+			 
+			 //ifstream file(value,ios::in);
+			 string out;
+             
+			 start = std::clock();
+			 while(getline (file,line)){
+				 root = avl.insert(root,line);
+			 }
             cout<<"Inputs from file inserted"<<endl;
             duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
             cout<<endl<<"Time Elapsed: "<<duration<<endl;
             start = 0;
             duration = 0;
+            //line = NULL;
             //avl.display(root, 1);
             getch();
             break;
+            }
 		case '3':
             cout<<"Enter value to be searched:";
             cin>>item;
