@@ -95,7 +95,7 @@ int main(){
 		cout<<"2 - Add from file"<<endl;
 		cout<<"3 - Search"<<endl;
 		cout<<"4 - Show All"<<endl;
-		cout<<"0 - Exit"<<endl;
+		cout<<"0 - Back to Create HashTable"<<endl;
 		cout<<"Selection: ";
 
 		select = getche();
@@ -117,7 +117,8 @@ int main(){
 				duration = 0;
 				break;
 			}
-			case '2':{
+			case '2':
+			{
 				string value;
 				cout<<endl<<endl<<"Enter file path: ";
 				getline(cin, value);
