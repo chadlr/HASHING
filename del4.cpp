@@ -22,6 +22,7 @@ class HashTable{
 		void PrintAll();
 		bool Search(string);
 		void UpdateTSize(int);
+		bool Delete(string);
 };
 
 HashTable::HashTable() {
@@ -78,6 +79,20 @@ bool HashTable::Search(string key){
 	return false;
 }
 
+bool HashTable::Delete(string key){
+	unsigned int hashkey = HashFunction(key);
+	
+	unsigned int index = hashkey;
+	for(unsigned int i = 1; i <= TableSize/2 ;i++){
+		if(Table[index] == key){
+			Table[index] = "";
+			return true;
+		}
+		index = (hashkey + (i*i)) % TableSize;
+	}
+	return false;
+}
+
 void HashTable::PrintAll() {
 	int index = 0;
 	cout<<endl<<endl;
@@ -123,6 +138,7 @@ int main(){
 			cout<<"2 - Add from file"<<endl;
 			cout<<"3 - Search"<<endl;
 			cout<<"4 - Show All"<<endl;
+			cout<<"5 - Delete value"<<endl;
 			cout<<"0 - Back to Create HashTable"<<endl;
 			cout<<"Selection: ";
 	
@@ -150,7 +166,9 @@ int main(){
 					cout<<endl<<endl<<"Enter file path: ";
 					getline(cin, value);
 					cout<<endl<<endl;
-					
+					if (value == ""){
+						value = "SampleInput3.exe";
+					}
 					ifstream file(value);
 					string out;
 					
@@ -169,6 +187,7 @@ int main(){
 					string value;
 					cout<<endl<<endl<<"Enter a value to search: ";
 					cin>>value;
+					cin.ignore();
 					start = clock();
 					if(h.Search(value)){
 						cout<<"Value already in the table.";
@@ -187,6 +206,25 @@ int main(){
 					h.PrintAll();
 					getch();
 					break;
+				case '5':{
+					string value;
+					cout<<endl<<endl<<"Enter a value to delete: ";
+					cin>>value;
+					cin.ignore();
+					start = clock();
+					if(h.Delete(value)){
+						cout<<"Value successfully deleted.";
+					}
+					else{
+						cout<<"Value could not be found.";
+					}
+					duration = (clock() - start )/ (double) CLOCKS_PER_SEC;
+					cout<<"Time elapsed: "<<duration<<endl;
+					getch();
+					start = 0;
+					duration = 0;
+					break;
+				}
 				case '0':
 					bLoop = false;
 					break;
