@@ -121,13 +121,27 @@ TreeNode *AVL_TREE::balance(TreeNode *temp)
     }
     return temp;
 }
-
+string LargestRight (TreeNode*& root)
+{
+       string info;
+       info = root->info;
+       if (root->right !=NULL)
+       {
+            return LargestRight(root->right);
+       }
+       else 
+       {
+            root=NULL;
+            return info;
+       }
+}
 //-------------SEARCH LOWEST TREE ELEMENT:-------------//
 string Lowest (TreeNode*& root)
 {
     if (root->left !=NULL)
     {
-         return Lowest(root->left);
+         return LargestRight(root->left);
+         //return Lowest(root->left);
     }
     else
     {
@@ -161,7 +175,7 @@ TreeNode *AVL_TREE::insert(TreeNode *root, string value)
         root->left = insert(root->left, value);
         root = balance (root);
     }
-    else if (value.compare(root->info) >= 0)
+    else if (value.compare(root->info) >=0)
     {
         root->right = insert(root->right, value);
         root = balance (root);
@@ -246,7 +260,7 @@ int main()
     string line;
     clock_t start;
     double duration;
-    ifstream file("SampleInput.txt");    
+    ifstream file("InputFile.txt");    
     while (1)
     {
         system("CLS");
@@ -259,7 +273,6 @@ int main()
         cout<<"6.Exit"<<endl<<endl;
         cout<<"Enter your Choice: ";
         cin>>choice;
-        cin.ignore();
         switch(choice)
         {
         case '1':
@@ -275,22 +288,21 @@ int main()
             getch();
             break;
         case '2':{
-             //string value;
+             string value;
              cout<<endl<<endl<<"Enter file path: ";
-			 //getline(cin, value);
+			 getline(cin, value);
 			 cout<<endl<<endl;
 			 
 			 //ifstream file(value,ios::in);
-			 //string out;
+			 string out;
              
 			 start = std::clock();
-			 while(file>>line){
+			 while(getline (file,line)){
 				 root = avl.insert(root,line);
 			 }
             cout<<"Inputs from file inserted"<<endl;
             duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
-            cout.precision(100);
-			cout<<endl<<"Time Elapsed: "<<duration<<endl;
+            cout<<endl<<"Time Elapsed: "<<duration<<endl;
             start = 0;
             duration = 0;
             //line = NULL;
@@ -304,7 +316,6 @@ int main()
             start = std::clock();
             root = avl.search(root, item);
             duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
-            cout.precision(100);
             cout<<endl<<"Time Elapsed: "<<duration<<endl;
             start = 0;
             duration = 0;
@@ -326,7 +337,6 @@ int main()
             start = std::clock();
             avl.inorder(root);
             duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
-            cout.precision(100);
             cout<<endl<<endl<<"Time Elapsed: "<<duration<<endl;
             start = 0;
             duration = 0;
