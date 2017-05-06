@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const int TableSize = 400009;
+const int TableSize = 23;
 string Table[TableSize];
 
 class HashTable{
@@ -20,6 +20,7 @@ class HashTable{
 		void Insert(string);
 		void PrintAll();
 		bool Search(string);
+		bool Delete(string);
 		
 };
 
@@ -34,20 +35,17 @@ HashTable::~HashTable(){
 unsigned int HashTable::HashFunction(string key){
 	unsigned long hashkey = 0;
 	for(char ch:key){
-		hashkey = 37 * hashkey + ch;
+		hashkey = 37 * hashkey + ch; // horners rule
 	}
-	//for(int x = 0; x < key.length(); x++)
-	//{
-		//hashkey = 37 * hashkey + key[x];
-	//}
-	return hashkey % TableSize;
+
+	return hashkey % TableSize; //where indexing happens
 }
 
 void HashTable::Insert(string key){
 	int hashkey = HashFunction(key);
 	
 	int index = hashkey;
-	//cout<<hashkey<<endl;
+
 	for(int i = 1; i <= TableSize/2 ;i++){
 		if(Table[index] == ""){
 			Table[index] = key;
@@ -66,6 +64,20 @@ bool HashTable::Search(string key){
 	int index = hashkey;
 	for(int i = 1; i <= TableSize/2 ;i++){
 		if(Table[index] == key){
+			return true;
+		}
+		index = (hashkey + (i*i)) % TableSize;
+	}
+	return false;
+}
+
+bool HashTable::Delete(string key){
+	int hashkey = HashFunction(key);
+	
+	int index = hashkey;
+	for(int i = 1; i <= TableSize/2 ;i++){
+		if(Table[index] == key){
+			Table[index] = "";
 			return true;
 		}
 		index = (hashkey + (i*i)) % TableSize;
@@ -100,6 +112,7 @@ int main(){
 		cout<<"2 - Add from file"<<endl;
 		cout<<"3 - Search"<<endl;
 		cout<<"4 - Show All"<<endl;
+		cout<<"5 - Delete file"<<endl;
 		cout<<"0 - Exit"<<endl;
 		cout<<"Selection: ";
 
@@ -138,7 +151,7 @@ int main(){
 				}
 				duration = (clock() - start )/ (double) CLOCKS_PER_SEC;
 				cout.precision(100);
-				cout<<"Time elapsed: "<<duration<<endl;
+				cout<<endl<<"Time elapsed: "<<duration<<endl;
 				getch();
 				start = 0;
 				duration = 0;
@@ -146,18 +159,19 @@ int main(){
 			}
 			case '3':{
 				string value;
-				cout<<"Enter a value to search: ";
+				cout<<endl<<"Enter a value to search: ";
 				cin>>value;
+				cin.ignore();
 				start = clock();
 				if(h.Search(value)){
-					cout<<"Value already in the table.";
+					cout<<endl<<"Value ("<<value<<") already in the table.";
 				}
 				else{
-					cout<<"Value not yet in the table.";
+					cout<<endl<<"Value ("<<value<<") not yet in the table.";
 				}
 				duration = (clock() - start )/ (double) CLOCKS_PER_SEC;
 				cout.precision(100);
-				cout<<"Time elapsed: "<<duration<<endl;
+				cout<<endl<<"Time elapsed: "<<duration<<endl;
 				getch();
 				start = 0;
 				duration = 0;
@@ -167,6 +181,26 @@ int main(){
 				h.PrintAll();
 				getch();
 				break;
+			case '5':{
+				string value;
+				cout<<endl<<"Enter a value to delete: ";
+				cin>>value;
+				cin.ignore();
+				start = clock();
+				if(h.Delete(value)){
+					cout<<"Value ("<<value<<") successfully deleted from the table.";
+				}
+				else{
+					cout<<"Value ("<<value<<") not found in the table.";
+				}
+				duration = (clock() - start )/ (double) CLOCKS_PER_SEC;
+				cout.precision(100);
+				cout<<endl<<"Time elapsed: "<<duration<<endl;
+				getch();
+				start = 0;
+				duration = 0;
+				break;
+			}
 			case '0':
 				bLoop = false;
 				break;
