@@ -258,7 +258,7 @@ int main()
     string line;
     clock_t start;
     double duration;
-    ifstream file("InputFile.txt");    
+    ifstream file("SampleInput.txt");    
     while (1)
     {
         system("CLS");
@@ -289,7 +289,7 @@ int main()
             break;
         case '2':{
              string value;
-             cout<<endl<<endl<<"Enter file path: ";
+             cout<<endl<<endl<<"SampleInput.txt";
 			 getline(cin, value);
 			 cout<<endl<<endl;
 			 string out;
