@@ -45,6 +45,7 @@ class AVL_TREE
 };
 
 
+
 //---------------------TREE HEIGHT---------------------//
 int AVL_TREE::height(TreeNode *temp)
 {
@@ -55,7 +56,6 @@ int AVL_TREE::height(TreeNode *temp)
         int r_height = height (temp->right);
         int max_height = max (l_height, r_height);
         h = max_height + 1;
-        //cout<<"height:"<<h<<endl;
     }
     return h;
 }
@@ -224,6 +224,7 @@ TreeNode *AVL_TREE::insert(TreeNode *root, string value)
         if (root->left !=NULL)
         {
              root->info = LargestRight(root->left);
+             
         }
         else if (root->right !=NULL)
         {
@@ -253,6 +254,7 @@ int main()
     char choice;
     string item;
     AVL_TREE avl;
+    int bal_factor;
     string line;
     clock_t start;
     double duration;
@@ -315,9 +317,8 @@ int main()
             getch();
             break;
         case '4':
-	    cout<<"Enter value to be deleted: ";
+		    cout<<"Enter value to be deleted: ";
             cin>>item;
-            //cout<<"height:"<<avl.height(root)<<endl;
             start = std::clock();
             root = avl.remove(root, item);
             root = avl.balance(root);
