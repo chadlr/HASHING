@@ -55,6 +55,7 @@ int AVL_TREE::height(TreeNode *temp)
         int r_height = height (temp->right);
         int max_height = max (l_height, r_height);
         h = max_height + 1;
+        //cout<<"height:"<<h<<endl;
     }
     return h;
 }
@@ -63,13 +64,17 @@ int AVL_TREE::height(TreeNode *temp)
 int AVL_TREE::diff(TreeNode *temp)
 {
     int l_height = height (temp->left);
+    //cout<<"height of left subtree:"<<l_height<<endl;
     int r_height = height (temp->right);
+    //cout<<"height of right subtree:"<<r_height<<endl;
     int b_factor= l_height - r_height;
+    //cout<<"Bal factor:"<<b_factor<<endl;
     return b_factor;
 }
 //------------------ROTATE RIGHT-RIGHT-----------------//
 TreeNode *AVL_TREE::right_right(TreeNode *parent)
 {
+    //cout<<"right_right rotation"<<endl;
     TreeNode *temp;
     temp = parent->right;
     parent->right = temp->left;
@@ -79,6 +84,7 @@ TreeNode *AVL_TREE::right_right(TreeNode *parent)
 //------------------ROTATE LEFT-LEFT:------------------//
 TreeNode *AVL_TREE::left_left(TreeNode *parent)
 {
+    //cout<<"left_left rotation"<<endl;
     TreeNode *temp;
     temp = parent->left;
     parent->left = temp->right;
@@ -88,6 +94,7 @@ TreeNode *AVL_TREE::left_left(TreeNode *parent)
 //------------------ROTATE LEFT-RIGHT------------------//
 TreeNode *AVL_TREE::left_right(TreeNode *parent)
 {
+    //cout<<"left_right rotation"<<endl;
     TreeNode *temp;
     temp = parent->left;
     parent->left = right_right (temp);
@@ -96,6 +103,7 @@ TreeNode *AVL_TREE::left_right(TreeNode *parent)
 //------------------ROTATE RIGHT-LEFT------------------//
 TreeNode *AVL_TREE::right_left(TreeNode *parent)
 {
+    //cout<<"right_left rotation"<<endl;
     TreeNode *temp;
     temp = parent->right;
     parent->right = left_left (temp);
@@ -105,12 +113,14 @@ TreeNode *AVL_TREE::right_left(TreeNode *parent)
 TreeNode *AVL_TREE::balance(TreeNode *temp)
 {
     int bal_factor = diff (temp);
+    //cout<<bal_factor<<endl;
     if (bal_factor > 1)
     {
         if (diff (temp->left) > 0)
             temp = left_left (temp);
         else
             temp = left_right (temp);
+        //cout<<">1"<<endl;
     }
     else if (bal_factor < -1)
     {
@@ -118,42 +128,30 @@ TreeNode *AVL_TREE::balance(TreeNode *temp)
             temp = right_left (temp);
         else
             temp = right_right (temp);
+        //cout<<"<-1"<<endl;
     }
+    //cout<<"Tree is now balanced"<<endl;
     return temp;
 }
+
+//---SEARCH LARGEST TREE ELEMENT FROM LEFT SUBTREE:---//
 string LargestRight (TreeNode*& root)
 {
-       string info;
-       info = root->info;
-       if (root->right !=NULL)
-       {
-            return LargestRight(root->right);
-       }
-       else 
-       {
-            root=NULL;
-            return info;
-       }
-}
-//-------------SEARCH LOWEST TREE ELEMENT:-------------//
-string Lowest (TreeNode*& root)
-{
-    if (root->left !=NULL)
+    if (root->right !=NULL)
     {
-         return LargestRight(root->left);
-         //return Lowest(root->left);
+         return LargestRight(root->right);
     }
     else
     {
         string info;
         info=root->info;
-        if(root->right !=NULL)
+        if (root->left !=NULL)
         {
-             root = root->right;
+             root = root->left;
         }
         else
         {
-            root=NULL;
+            root = NULL;
         }
         return info;
     }
@@ -193,12 +191,10 @@ TreeNode *AVL_TREE::insert(TreeNode *root, string value)
     else if (value.compare(root->info)<0)
     {
          root->left = search(root->left, value);
-         //root = balance (root);
     }
     else if (value.compare(root->info) >0)
     {
          root->right = search(root->right, value);
-         //root = balance (root);
     }
     else //if (value.compare(root->info) = 0)
     {
@@ -210,6 +206,7 @@ TreeNode *AVL_TREE::insert(TreeNode *root, string value)
 //--------------REMOVE ELEMENT FROM TREE:--------------//
   TreeNode *AVL_TREE::remove(TreeNode *root, string value)
  {
+    AVL_TREE avl;
     if (root == NULL)
     {
          cout<<"not found"<<endl;
@@ -224,18 +221,17 @@ TreeNode *AVL_TREE::insert(TreeNode *root, string value)
     }
     else //if (value.compare(root->info) = 0)
     {
-        if (root->right !=NULL)
+        if (root->left !=NULL)
         {
-             root->info = Lowest(root->right);
+             root->info = LargestRight(root->left);
         }
-        else if (root->left !=NULL)
+        else if (root->right !=NULL)
         {
-             root = root->left;
+             root = root->right;
         }
         else
         {
             root = NULL;
-            root = balance(root);
         }
             cout<<"Element deleted"<<endl;
     }
@@ -270,7 +266,8 @@ int main()
         cout<<"3.Search element from tree"<<endl;
 		cout<<"4.Remove element from tree"<<endl;
         cout<<"5.Print tree (inorder)"<<endl;
-        cout<<"6.Exit"<<endl<<endl;
+        cout<<"6.Height of AVL Tree"<<endl;
+        cout<<"7.Exit"<<endl<<endl;
         cout<<"Enter your Choice: ";
         cin>>choice;
         switch(choice)
@@ -280,6 +277,7 @@ int main()
             cin>>item;
             start = std::clock();
             root = avl.insert(root, item);
+            cout<<"height:"<<avl.height(root)<<endl;
             cout<<"Element added"<<endl;
             duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
             cout<<endl<<"Time Elapsed: "<<duration<<endl;
@@ -292,11 +290,8 @@ int main()
              cout<<endl<<endl<<"Enter file path: ";
 			 getline(cin, value);
 			 cout<<endl<<endl;
-			 
-			 //ifstream file(value,ios::in);
 			 string out;
-             
-			 start = std::clock();
+             start = std::clock();
 			 while(getline (file,line)){
 				 root = avl.insert(root,line);
 			 }
@@ -305,8 +300,6 @@ int main()
             cout<<endl<<"Time Elapsed: "<<duration<<endl;
             start = 0;
             duration = 0;
-            //line = NULL;
-            //avl.display(root, 1);
             getch();
             break;
             }
@@ -322,10 +315,12 @@ int main()
             getch();
             break;
         case '4':
-		    cout<<"Enter value to be deleted: ";
+	    cout<<"Enter value to be deleted: ";
             cin>>item;
+            //cout<<"height:"<<avl.height(root)<<endl;
             start = std::clock();
             root = avl.remove(root, item);
+            root = avl.balance(root);
             duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
             cout<<endl<<"Time Elapsed: "<<duration<<endl;
             start = 0;
@@ -343,6 +338,10 @@ int main()
             getch();
             break;
         case '6':
+             cout<<"Height of AVL tree is:"<<avl.height(root)<<endl;
+             getch();
+             break;
+        case '7':
             exit(1);    
             break;
         default:
